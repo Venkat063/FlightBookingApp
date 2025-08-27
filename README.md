@@ -13,6 +13,7 @@ A modern Online Flight Booking web application built with **Java Servlets**, **J
 - Production-ready Java folder structure with DAO, Models, Servlets, and JSP for views
 
 ---
+<img width="1919" height="1022" alt="Screenshot 2025-08-25 105220" src="https://github.com/user-attachments/assets/dd23e1c7-a0e2-4236-b7ab-38982a4fd4c7" />
 
 ## 🗂️ Project Structure
 
