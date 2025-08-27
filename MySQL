@@ -1,0 +1,45 @@
+CREATE DATABASE IF NOT EXISTS flightdb;
+USE flightdb;
+
+CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(120) NOT NULL UNIQUE,
+  password_hash VARCHAR(64) NOT NULL, -- SHA-256 hex
+  role ENUM('USER','ADMIN') NOT NULL DEFAULT 'USER',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS flights (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  airline VARCHAR(80) NOT NULL,
+  from_city VARCHAR(80) NOT NULL,
+  to_city VARCHAR(80) NOT NULL,
+  depart_date DATE NOT NULL,
+  depart_time TIME NOT NULL,
+  price DECIMAL(10,2) NOT NULL,
+  seats_available INT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS bookings (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  flight_id INT NOT NULL,
+  passengers INT NOT NULL,
+  booking_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  status ENUM('CONFIRMED','CANCELLED') DEFAULT 'CONFIRMED',
+  FOREIGN KEY (user_id) REFERENCES users(id),
+  FOREIGN KEY (flight_id) REFERENCES flights(id)
+);
+
+-- Sample admin user (password: admin123, SHA-256 hash below)
+INSERT INTO users(name,email,password_hash,role)
+VALUES ('Admin','admin@flightapp.com',
+'240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9','ADMIN')
+ON DUPLICATE KEY UPDATE email=email;
+
+-- Sample flights (dates are set as current + interval for demo)
+INSERT INTO flights(airline, from_city, to_city, depart_date, depart_time, price, seats_available) VALUES
+('IndiGo','Hyderabad','Mumbai', DATE_ADD(CURDATE(), INTERVAL 1 DAY), '10:00:00', 4500.00, 50),
+('Air India','Bengaluru','Delhi', DATE_ADD(CURDATE(), INTERVAL 2 DAY), '14:30:00', 6500.00, 40),
+('Vistara','Chennai','Kolkata', DATE_ADD(CURDATE(), INTERVAL 3 DAY), '09:15:00', 7200.00, 30);
